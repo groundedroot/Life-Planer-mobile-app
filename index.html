@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Paint Your Month V29 Clean Memory Icon</title>
+<title>Paint Your Month V36 Final Design Polish</title>
 <style>
 :root{
   --bg:#0f0f0f;
@@ -475,6 +475,98 @@ body.week-mode .week-day .timed-line:nth-of-type(n){display:block;}
   body:not(.week-mode) .panel.open-mode ~ *{}
   body.week-mode .week-day .timed-line:nth-of-type(n){display:block;}
 }
+
+
+/* V31 polish: stronger density, smoother drawer, better event readability */
+.day.density-0,.week-day.density-0{background:linear-gradient(145deg,#080807,#030303)!important;border-color:rgba(0,0,0,.95)!important;}
+.day.empty-day,.week-day.empty-day{background:linear-gradient(145deg,#070706,#020202)!important;border-color:#000!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.012)!important;}
+.day.density-1,.week-day.density-1{background:linear-gradient(145deg,rgba(226,149,69,.18),rgba(226,149,69,.045)),#111!important;}
+.day.density-2,.week-day.density-2{background:linear-gradient(145deg,rgba(226,149,69,.34),rgba(226,149,69,.10)),#12100e!important;}
+.day.density-3,.week-day.density-3{background:linear-gradient(145deg,rgba(226,149,69,.52),rgba(226,149,69,.16)),#15110d!important;}
+.day.density-4,.week-day.density-4{background:linear-gradient(145deg,rgba(226,149,69,.70),rgba(226,149,69,.24)),#18120b!important;}
+.day.density-5,.week-day.density-5{background:linear-gradient(145deg,rgba(226,149,69,.88),rgba(226,149,69,.32)),#1c1309!important;}
+.panel{transition:flex-basis .24s ease, min-height .24s ease, margin-top .18s ease, border-color .18s ease;}
+.panel-body{transition:opacity .18s ease;}
+.habit-strip{flex-wrap:wrap;overflow:visible;gap:7px;}
+.habit-chip{max-width:none;}
+.habit-name-mini{max-width:160px;}
+.holiday-star{font-size:9px;color:#ffd38c;margin-left:3px;vertical-align:1px;text-shadow:0 0 8px rgba(226,149,69,.35);}
+.timed-line.two-line{height:auto;min-height:30px;line-height:1.12;padding:3px 7px;margin:2px 5px 0;border-radius:8px;background:rgba(0,0,0,.12);border:1px solid rgba(255,255,255,.035);display:flex;flex-direction:column;align-items:flex-start;gap:1px;white-space:normal;}
+.timed-line.two-line .time{display:block;font-size:9px;line-height:1;color:var(--accent2);margin:0;opacity:.9;}
+.timed-line.two-line .entry-title{display:block;color:#f4eadf;font-size:10px;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.memory-preview-card.show{display:block;}
+.celebration-toast{position:fixed;left:50%;bottom:max(84px,calc(84px + env(safe-area-inset-bottom)));transform:translateX(-50%);z-index:99;background:rgba(20,20,20,.96);border:1px solid rgba(226,149,69,.34);color:var(--barText);border-radius:999px;padding:10px 14px;box-shadow:0 12px 30px rgba(0,0,0,.4);font-weight:700;animation:toastPop 2.4s ease forwards;}
+@keyframes toastPop{0%{opacity:0;transform:translateX(-50%) translateY(12px) scale(.96)}12%,82%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(10px) scale(.98)}}
+@media(max-width:700px){
+  .habit-chip{font-size:11px;padding:6px 8px;}
+  .habit-dot{width:13px;height:13px;font-size:9px;}
+  .habit-name-mini{max-width:110px;}
+  body.week-mode .timed-line.two-line,.panel.collapsed ~ .timed-line.two-line{min-height:32px;}
+}
+
+
+/* V32 fix pass: reliable photos, explicit habit editing, safer mobile cell spacing */
+.memory-preview-card.show{display:block;}
+.memory-preview-actions span:after{content:" saved";color:var(--muted);font-size:12px;margin-left:4px;}
+.habit-manage-btn{width:auto;height:28px;border:1px solid rgba(226,149,69,.22);color:var(--accent);background:rgba(226,149,69,.06);padding:0 10px;font-size:12px;border-radius:999px;}
+.habit-tools{display:flex;align-items:center;gap:7px;}
+.day,.week-day{padding-bottom:24px;}
+.timed-line.two-line{min-height:25px;height:auto;line-height:1.1;padding-top:3px;padding-bottom:3px;}
+.timed-line.two-line .time{display:block;font-size:9px;line-height:1.05;margin:0 0 2px 0;}
+.timed-line.two-line .entry-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.08;}
+@media(max-width:700px){
+  .day,.week-day{padding-bottom:25px;}
+  .timed-line.two-line{min-height:24px;font-size:9.5px;}
+  .slot{height:16px;}
+  .bar-line{height:16px;line-height:16px;}
+  .cell-habit{bottom:4px;}
+  .cell-more{bottom:4px;}
+}
+
+
+/* V35 final design polish: lock the Life Calendar feel without adding new features */
+:root{--cell-radius:15px;--panel-radius:24px;}
+.top.stable-top{margin-bottom:7px;}
+.month{font-weight:760;letter-spacing:-.9px;}
+.month-arrow,.paint-top,.today-chip,.memory-chip,.panel-toggle,.habit-manage-btn{transition:background .18s ease,border-color .18s ease,transform .18s ease,opacity .18s ease;}
+.month-arrow:active,.paint-top:active,.today-chip:active,.memory-chip:active,.panel-toggle:active{transform:scale(.96);}
+.paint-top:active{transform:translateY(-50%) scale(.96);}
+.day,.week-day{border-radius:var(--cell-radius);padding-bottom:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);}
+.day.selected,.week-day.selected{box-shadow:inset 0 0 0 1px rgba(255,184,111,.16),0 0 0 1px rgba(255,184,111,.28);}
+.day.today,.week-day.today{box-shadow:inset 0 0 0 1px rgba(255,184,111,.10);}
+.num{position:relative;z-index:6;}
+.cell-memory{z-index:7;opacity:.86;}
+.cell-habit,.cell-more{z-index:7;backdrop-filter:blur(4px);}
+.bar-line{box-shadow:inset 0 0 0 1px rgba(255,225,190,.11),0 1px 4px rgba(0,0,0,.10);}
+.timed-line.two-line{margin-left:5px;margin-right:5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);}
+body.panel-collapsed .calendar-wrap .grid{gap:5px;}
+body.panel-collapsed .day{padding-bottom:31px;}
+.panel{border-radius:var(--panel-radius);transition:flex-basis .34s cubic-bezier(.2,.82,.2,1),min-height .34s cubic-bezier(.2,.82,.2,1),margin-top .24s ease,border-color .24s ease,background .24s ease;}
+.panel-head{user-select:none;}
+.panel-body{scrollbar-width:none;}
+.panel-body::-webkit-scrollbar{display:none;}
+.panel.collapsed{box-shadow:0 -8px 24px rgba(0,0,0,.20);}
+.panel.week-mode{box-shadow:0 -12px 30px rgba(0,0,0,.22);}
+.habit-strip-card,.split-card,.memory-preview-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.025);}
+.habit-chip{min-height:32px;}
+.habit-chip.done{box-shadow:0 0 0 1px rgba(226,149,69,.08),0 5px 14px rgba(226,149,69,.05);}
+.palette.show{animation:paletteIn .18s ease both;}
+@keyframes paletteIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){
+  :root{--cell-radius:13px;--panel-radius:21px;}
+  .app{padding-left:8px;padding-right:8px;}
+  .top.stable-top{gap:7px;}
+  .month{font-size:22px;}
+  .paint-top{font-size:12px;padding:7px 8px;}
+  .day{padding-bottom:28px;}
+  body.panel-collapsed .day{padding-bottom:30px;}
+  .cell-habit,.cell-more{bottom:5px;font-size:9px;}
+  .cell-memory{top:4px;right:4px;transform:scale(.92);transform-origin:top right;}
+  .timed-line.two-line{min-height:26px;padding:3px 5px;}
+  .timed-line.two-line .entry-title{font-size:9.4px;line-height:1.08;}
+  .week-day{padding-bottom:30px;}
+}
+
 </style>
 </head>
 <body>
@@ -518,7 +610,7 @@ body.week-mode .week-day .timed-line:nth-of-type(n){display:block;}
       <div class="habit-strip-card top-habits">
         <div class="habit-strip-head">
           <div class="section-label">Habits</div>
-          <button class="habit-mini-add" onclick="HabitUI.addHabit()">+</button>
+          <div class="habit-tools"><button class="habit-manage-btn" onclick="HabitUI.manageHabit()">Edit</button><button class="habit-mini-add" onclick="HabitUI.addHabit()">+</button></div>
         </div>
         <div id="habitStrip" class="habit-strip"></div>
       </div>
@@ -565,7 +657,7 @@ body.week-mode .week-day .timed-line:nth-of-type(n){display:block;}
 </main>
 
 <script>
-const KEY="paint_your_month_v15_4_2_safe"; // keep old storage so your data carries over
+const KEY="paint_your_month_v15_4_2_safe"; // V33 keeps old storage so your data carries over
 let data=JSON.parse(localStorage.getItem(KEY)||"{}");
 let monthDate=new Date(); monthDate.setDate(1);
 let selected=keyFromDate(new Date());
@@ -573,21 +665,88 @@ let editMode=false;
 let selectedTemplate=null;
 let gridPainting=false, gridPaintStart=null, gridPaintEnd=null;
 
-const defaults=[{text:"Work",time:"0700"},{text:"Gym",time:"1530"},{text:"Appointment",time:""},{text:"Vacation",time:""},{text:"Cat Sitting",time:""}];
+const defaults=[
+  {text:"Work",time:"0700"},{text:"Gym",time:"1530"},{text:"Appointment",time:"1200"},{text:"Vacation",time:""},{text:"Cat Sitting",time:""},
+  {text:"Travel",time:"1200"},{text:"Camping",time:""},{text:"Golf",time:"1200"},{text:"Family",time:"1200"},{text:"Dinner",time:"1800"},
+  {text:"Payday",time:""},{text:"Holiday",time:""},{text:"Errands",time:"1200"},{text:"School",time:"0800"},{text:"Birthday",time:""},
+  {text:"Reminder",time:"1200"},{text:"Doctor",time:"1200"},{text:"Car",time:"1200"}
+];
 let customRecents=JSON.parse(localStorage.getItem(KEY+"_recents")||"[]");
-let paletteTime="";
+let paletteTime="1200";
 let paletteEntry="Work";
 
 const MemoryStore=(()=>{
-  const STORAGE_KEY=KEY+"_memories_v1";
-  function read(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}")}catch{return {}}}
-  function write(memories){localStorage.setItem(STORAGE_KEY,JSON.stringify(memories||{}));}
-  function get(k){return read()[k]||""}
-  function set(k,value){const m=read(); if(value)m[k]=value; else delete m[k]; write(m);}
-  return {read,get,set};
+  // V33: Netlify/mobile safe memory store.
+  // localStorage keeps tiny day markers for instant icons; IndexedDB keeps the actual photo.
+  const MARKER_KEY=KEY+"_memory_markers_v2";
+  const FALLBACK_KEY=KEY+"_memories_v1";
+  const DB_NAME="paint_your_month_memory_db_v1";
+  const STORE="photos";
+  let markers={};
+  let cache={};
+  let dbPromise=null;
+  function safeParse(raw,fallback){try{return JSON.parse(raw||"")||fallback}catch{return fallback}}
+  function loadMarkers(){
+    markers=safeParse(localStorage.getItem(MARKER_KEY),{});
+    const old=safeParse(localStorage.getItem(FALLBACK_KEY),{});
+    Object.keys(old).forEach(k=>{if(old[k]){markers[k]=1;cache[k]=old[k];}});
+    persistMarkers();
+  }
+  function persistMarkers(){try{localStorage.setItem(MARKER_KEY,JSON.stringify(markers||{}));}catch{}}
+  function openDb(){
+    if(!('indexedDB' in window))return Promise.resolve(null);
+    if(dbPromise)return dbPromise;
+    dbPromise=new Promise(resolve=>{
+      const req=indexedDB.open(DB_NAME,1);
+      req.onupgradeneeded=()=>{try{req.result.createObjectStore(STORE)}catch{}};
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>resolve(null);
+      req.onblocked=()=>resolve(null);
+    });
+    return dbPromise;
+  }
+  async function dbGet(k){
+    const db=await openDb(); if(!db)return "";
+    return new Promise(resolve=>{
+      const tx=db.transaction(STORE,'readonly');
+      const req=tx.objectStore(STORE).get(k);
+      req.onsuccess=()=>resolve(req.result||"");
+      req.onerror=()=>resolve("");
+    });
+  }
+  async function dbSet(k,value){
+    const db=await openDb(); if(!db)return false;
+    return new Promise(resolve=>{
+      const tx=db.transaction(STORE,'readwrite');
+      const store=tx.objectStore(STORE);
+      if(value)store.put(value,k); else store.delete(k);
+      tx.oncomplete=()=>resolve(true);
+      tx.onerror=()=>resolve(false);
+    });
+  }
+  async function hydrate(){
+    loadMarkers();
+    const keys=Object.keys(markers);
+    await Promise.all(keys.map(async k=>{if(!cache[k]){const v=await dbGet(k); if(v)cache[k]=v;}}));
+  }
+  function read(){return {...cache}}
+  function has(k){return !!markers[k] || !!cache[k]}
+  function get(k){return cache[k]||""}
+  async function set(k,value){
+    if(value){markers[k]=1;cache[k]=value;} else {delete markers[k];delete cache[k];}
+    persistMarkers();
+    const ok=await dbSet(k,value);
+    if(!ok && value){
+      // last-resort fallback for desktop/local testing; keep photos small to avoid quota.
+      try{const old=safeParse(localStorage.getItem(FALLBACK_KEY),{});old[k]=value;localStorage.setItem(FALLBACK_KEY,JSON.stringify(old));}
+      catch{throw new Error('Photo storage failed');}
+    }
+  }
+  loadMarkers();
+  return {read,get,has,set,hydrate};
 })();
 const MemoryUI=(()=>{
-  function has(k){return !!MemoryStore.get(k)}
+  function has(k){return MemoryStore.has(k)}
   function updateButton(){
     const btn=document.getElementById('memoryBtn');
     if(!btn)return;
@@ -604,7 +763,7 @@ const MemoryUI=(()=>{
   function remove(e){
     if(e)e.stopPropagation();
     if(!MemoryStore.get(selected))return;
-    if(confirm('Remove memory photo for this day?')){MemoryStore.set(selected,''); render();}
+    if(confirm('Remove memory photo for this day?')){MemoryStore.set(selected,'').then(()=>render());}
   }
   function renderPreview(){
     const card=document.getElementById('memoryPreview');
@@ -623,12 +782,13 @@ const MemoryUI=(()=>{
       const file=e.target.files&&e.target.files[0];
       if(!file)return;
       try{
-        const dataUrl=await compressImage(file,900,.72);
-        MemoryStore.set(selected,dataUrl);
+        const dataUrl=await compressImage(file,360,.50);
+        await MemoryStore.set(selected,dataUrl);
+        MemoryUI.updateButton();
         render();
       }catch(err){
         const reader=new FileReader();
-        reader.onload=()=>{MemoryStore.set(selected,reader.result);render();};
+        reader.onload=async()=>{try{await MemoryStore.set(selected,reader.result);MemoryUI.updateButton();render();}catch(storageErr){alert("That photo was too large to save in this test build. Try a smaller image.");}};
         reader.readAsDataURL(file);
       }
     });
@@ -682,7 +842,7 @@ const HabitStore=(()=>{
     let days=Array.isArray(h.days)?h.days.map(Number).filter(d=>d>=0&&d<=6):allDays;
     if(!days.length)days=allDays;
     days=[...new Set(days)].sort((a,b)=>a-b);
-    return {id:String(h.id||id()),name,days,createdAt:String(h.createdAt||new Date().toISOString()),checks};
+    return {id:String(h.id||id()),name,days,createdAt:String(h.createdAt||new Date().toISOString()),checks,archived:!!h.archived,archivedAt:h.archivedAt||null};
   }
   function write(state){localStorage.setItem(STORAGE_KEY,JSON.stringify({habits:state.habits.map(cleanHabit).filter(Boolean)}));}
   function update(fn){const state=read();fn(state);write(state);return state;}
@@ -692,7 +852,7 @@ const HabitStore=(()=>{
 const HabitUI=(()=>{
   const dayNames=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   function selectedDayNumber(){return dateFromKey(selected).getDay();}
-  function habitsForSelected(){return HabitStore.read().habits.filter(h=>h.days.includes(selectedDayNumber()));}
+  function habitsForSelected(){return HabitStore.read().habits.filter(h=>!h.archived && h.days.includes(selectedDayNumber()));}
   function render(){
     const strip=document.getElementById("habitStrip");
     if(!strip)return;
@@ -708,13 +868,15 @@ const HabitUI=(()=>{
     habits.forEach(habit=>{
       const chip=document.createElement("button");
       chip.className="habit-chip"+(habit.checks&&habit.checks[selected]?" done":"");
-      chip.title="Tap to check off. Long press to schedule.";
+      chip.title="Tap to check off. Long press to schedule or graduate.";
       chip.onclick=()=>toggleCheck(habit.id,selected);
       chip.oncontextmenu=e=>{e.preventDefault();editHabit(habit.id)};
-      let pressTimer=null;
-      chip.onpointerdown=()=>{pressTimer=setTimeout(()=>editHabit(habit.id),650)};
+      let pressTimer=null, startX=0, startY=0;
+      chip.onpointerdown=e=>{startX=e.clientX||0;startY=e.clientY||0;pressTimer=setTimeout(()=>editHabit(habit.id),850)};
+      chip.onpointermove=e=>{if(Math.abs((e.clientX||0)-startX)>8||Math.abs((e.clientY||0)-startY)>8)clearTimeout(pressTimer)};
       chip.onpointerup=()=>clearTimeout(pressTimer);
       chip.onpointerleave=()=>clearTimeout(pressTimer);
+      chip.onpointercancel=()=>clearTimeout(pressTimer);
       const dot=document.createElement("span"); dot.className="habit-dot"; dot.textContent="✓";
       const name=document.createElement("span"); name.className="habit-name-mini"; name.textContent=habit.name;
       chip.append(dot,name);
@@ -739,10 +901,13 @@ const HabitUI=(()=>{
     const habit=state.habits.find(h=>h.id===id);
     if(!habit)return;
     const current=habit.days.length===7?"daily":habit.days.map(d=>dayNames[d][0]).join("");
-    const next=prompt('Edit habit. Examples: daily, weekdays, weekends, MWF. Type "delete" to remove.',current);
+    const next=prompt('Edit habit. Examples: daily, weekdays, weekends, MWF. Type "graduate" when it is fully formed, or "delete" to remove.',current);
     if(next===null)return;
     if(next.trim().toLowerCase()==="delete"){
       HabitStore.update(s=>{s.habits=s.habits.filter(h=>h.id!==id)});
+    }else if(next.trim().toLowerCase()==="graduate"){
+      HabitStore.update(s=>{const h=s.habits.find(x=>x.id===id); if(h){h.archived=true;h.archivedAt=new Date().toISOString();}});
+      celebrateHabit(habit.name);
     }else{
       const days=parseDays(next);
       HabitStore.update(s=>{const h=s.habits.find(x=>x.id===id); if(h)h.days=days;});
@@ -760,11 +925,28 @@ const HabitUI=(()=>{
     for(const ch of v.replace(/[^a-z]/g,""))if(map[ch]!==undefined)days.push(map[ch]);
     return [...new Set(days)].sort((a,b)=>a-b).length?[...new Set(days)].sort((a,b)=>a-b):[0,1,2,3,4,5,6];
   }
+  function celebrateHabit(name){
+    const el=document.createElement("div");
+    el.className="celebration-toast";
+    el.textContent="🎉 Habit graduated: "+name;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2500);
+  }
+  function manageHabit(){
+    const habits=HabitStore.read().habits.filter(h=>!h.archived);
+    if(!habits.length){addHabit();return;}
+    const list=habits.map((h,i)=>`${i+1}. ${h.name}`).join("\n");
+    const pick=prompt('Which habit do you want to edit or graduate?\n\n'+list+'\n\nType the number, or type + to add.');
+    if(!pick)return;
+    if(pick.trim()==='+'){addHabit();return;}
+    const index=Number(pick.trim())-1;
+    if(index>=0 && index<habits.length)editHabit(habits[index].id);
+  }
   function toggleCheck(id,k){
     HabitStore.update(state=>{const h=state.habits.find(x=>x.id===id); if(h){h.checks=h.checks||{}; h.checks[k]=!h.checks[k];}});
     render(); renderMonth();
   }
-  return {render,addHabit,editHabit,toggleCheck};
+  return {render,addHabit,editHabit,manageHabit,toggleCheck};
 })();
 
 function keyFromDate(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
@@ -857,19 +1039,59 @@ function connectedInfo(k,n){
   const nx=dayData(addDays(k,1)).entries.some(e=>!isTimed(e)&&normalizeName(e.text)===n);
   return{start:!p,end:!nx,single:!p&&!nx};
 }
+function visibleConnectedInfo(k,n,firstVisibleKey){
+  const conn=connectedInfo(k,n);
+  if(firstVisibleKey && k===firstVisibleKey && !conn.single){
+    return {...conn,start:true,visibleStart:true};
+  }
+  return conn;
+}
+
+function softRenderCalendarOnly(){
+  save();
+  renderMonth();
+  renderWeekDock();
+  headerLabel();
+}
 function densityLevel(k){
-  const count=dayData(k).entries.length+(dayData(k).notes.trim()?1:0)+habitsForKey(k).length+(MemoryUI.has(k)?1:0);
+  // V34: density should visualize actual life-content, not every habit that is merely scheduled.
+  // Scheduled habits made every Netlify day look equally busy because the app had daily habits saved there.
+  const info=dayData(k);
+  const events=info.entries.length;
+  const notes=info.notes.trim()?1:0;
+  const memory=MemoryUI.has(k)?1:0;
+  const completedHabits=habitDoneCountForKey(k);
+  const count=events+notes+memory+completedHabits;
   return Math.min(count,5);
 }
+function applyDensity(el,k){
+  const lvl=densityLevel(k);
+  el.classList.add('density-'+lvl);
+  el.setAttribute('data-density',String(lvl));
+  const styles=[
+    ['linear-gradient(145deg,#070707,#020202)','rgba(0,0,0,.96)'],
+    ['linear-gradient(145deg,rgba(226,149,69,.16),rgba(226,149,69,.035)),#101010','rgba(226,149,69,.14)'],
+    ['linear-gradient(145deg,rgba(226,149,69,.30),rgba(226,149,69,.08)),#12100e','rgba(226,149,69,.20)'],
+    ['linear-gradient(145deg,rgba(226,149,69,.48),rgba(226,149,69,.14)),#15110d','rgba(226,149,69,.26)'],
+    ['linear-gradient(145deg,rgba(226,149,69,.66),rgba(226,149,69,.22)),#18120b','rgba(226,149,69,.32)'],
+    ['linear-gradient(145deg,rgba(226,149,69,.84),rgba(226,149,69,.30)),#1c1309','rgba(226,149,69,.40)']
+  ];
+  // Use inline values with priority so hosted/cache CSS conflicts cannot flatten the density colors.
+  el.style.setProperty('background',styles[lvl][0],'important');
+  el.style.setProperty('border-color',styles[lvl][1],'important');
+}
 function habitsForKey(k){
-  try{const dow=dateFromKey(k).getDay();return HabitStore.read().habits.filter(h=>h.days.includes(dow));}catch{return []}
+  try{const dow=dateFromKey(k).getDay();return HabitStore.read().habits.filter(h=>!h.archived && h.days.includes(dow));}catch{return []}
 }
 function habitDoneCountForKey(k){
   return habitsForKey(k).filter(h=>h.checks&&h.checks[k]).length;
 }
 function commonTimes(){
   const times=[""];
-  for(let h=0;h<24;h++)for(let m=0;m<60;m+=30)times.push(String(h).padStart(2,"0")+String(m).padStart(2,"0"));
+  const preferred=["1200","0700","0730","0800","0830","0900","1000","1100","1230","1300","1400","1500","1530","1600","1700","1730","1800","1900","1930","2000"];
+  preferred.forEach(t=>times.push(t));
+  for(let h=5;h<24;h++)for(let m=0;m<60;m+=30){const t=String(h).padStart(2,"0")+String(m).padStart(2,"0"); if(!times.includes(t))times.push(t);}
+  for(let h=0;h<5;h++)for(let m=0;m<60;m+=30){const t=String(h).padStart(2,"0")+String(m).padStart(2,"0"); if(!times.includes(t))times.push(t);}
   return times;
 }
 function entryNames(){
@@ -877,7 +1099,7 @@ function entryNames(){
   Object.values(data).forEach(day=>(day.entries||[]).forEach(e=>{if(e.text&&e.text.trim())map.set(normalizeName(e.text),e.text)}));
   customRecents.forEach(t=>{if(t.text&&t.text.trim()&&!map.has(normalizeName(t.text)))map.set(normalizeName(t.text),t.text)});
   defaults.forEach(t=>{if(!map.has(normalizeName(t.text)))map.set(normalizeName(t.text),t.text)});
-  return [...map.values()].slice(0,18);
+  return [...map.values()].slice(0,30);
 }
 function activePaletteTemplate(){return {text:paletteEntry||"Entry",time:paletteTime||""}}
 function renderPalette(){
@@ -926,6 +1148,44 @@ function renamePaletteEntry(oldName){
   if(normalizeName(paletteEntry)===normalizeName(oldName))paletteEntry=next;
   save(); render();
 }
+
+function nthWeekdayOfMonth(year,month,weekday,n){
+  const d=new Date(year,month,1); const offset=(weekday-d.getDay()+7)%7; d.setDate(1+offset+(n-1)*7); return d;
+}
+function lastWeekdayOfMonth(year,month,weekday){
+  const d=new Date(year,month+1,0); const offset=(d.getDay()-weekday+7)%7; d.setDate(d.getDate()-offset); return d;
+}
+function easterDate(year){
+  const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31)-1,day=((h+l-7*m+114)%31)+1;
+  return new Date(year,month,day);
+}
+function holidayMapForYear(year){
+  const map={};
+  const add=(d,name)=>{map[keyFromDate(d)]=name};
+  add(new Date(year,0,1),"New Year's Day");
+  add(nthWeekdayOfMonth(year,0,1,3),"MLK Day");
+  add(nthWeekdayOfMonth(year,1,1,3),"Presidents' Day");
+  add(lastWeekdayOfMonth(year,4,1),"Memorial Day");
+  add(new Date(year,5,19),"Juneteenth");
+  add(new Date(year,6,4),"Independence Day");
+  add(nthWeekdayOfMonth(year,8,1,1),"Labor Day");
+  add(nthWeekdayOfMonth(year,9,1,2),"Indigenous Peoples' Day");
+  add(new Date(year,10,11),"Veterans Day");
+  add(nthWeekdayOfMonth(year,10,4,4),"Thanksgiving");
+  add(new Date(year,11,25),"Christmas");
+  add(nthWeekdayOfMonth(year,4,0,2),"Mother's Day");
+  add(nthWeekdayOfMonth(year,5,0,3),"Father's Day");
+  add(new Date(year,1,14),"Valentine's Day");
+  add(new Date(year,9,31),"Halloween");
+  const easter=easterDate(year); add(easter,"Easter");
+  return map;
+}
+function holidayForKey(k){const d=dateFromKey(k);return holidayMapForYear(d.getFullYear())[k]||"";}
+
+function timedLineHtml(entry,twoLine){
+  if(twoLine)return '<span class="time">'+escapeHtml(entry.time)+'</span><span class="entry-title">'+escapeHtml(entry.text)+'</span>';
+  return '<span class="time">'+escapeHtml(entry.time)+'</span>'+escapeHtml(entry.text);
+}
 function renderMonth(){
   headerLabel();
   const grid=document.getElementById("grid"); grid.innerHTML="";
@@ -935,7 +1195,8 @@ function renderMonth(){
   visible.forEach(date=>{
     const k=keyFromDate(date), info=dayData(k);
     const day=document.createElement("div");
-    day.className="day density-"+densityLevel(k);
+    day.className="day";
+    applyDensity(day,k);
     day.dataset.key=k;
     if(k===selected)day.classList.add("selected");
     if(k===today)day.classList.add("today");
@@ -949,13 +1210,16 @@ function renderMonth(){
 
     const num=document.createElement("div");
     num.className="num"; num.textContent=date.getDate();
+    const holiday=holidayForKey(k);
+    if(holiday){const star=document.createElement("span");star.className="holiday-star";star.textContent="★";star.title=holiday;num.appendChild(star);day.title=holiday;}
     day.appendChild(num);
 
     const names=uniqueUntimedNamesForKey(k), maxRow=Math.max(-1,...Object.values(rowMap[k]||{}));
-    // V26: normal/open month is an overview; collapsed month fills the taller cells.
-    const maxVisibleEntries=panelMode==='collapsed'?5:2;
-    let shown=0;
-    for(let r=0;r<=maxRow && shown<maxVisibleEntries;r++){
+    // V35: cell rendering uses a line budget instead of a raw entry count.
+    // This keeps long two-line entries from running into the habit/more markers.
+    const lineBudget=panelMode==='collapsed'?4:2;
+    let shown=0, usedLines=0;
+    for(let r=0;r<=maxRow && usedLines+1<=lineBudget;r++){
       const slot=document.createElement("div"); slot.className="slot";
       const item=names.find(n=>rowMap[k][n.name]===r);
       if(item){
@@ -963,26 +1227,27 @@ function renderMonth(){
         bar.className="bar-line "+(conn.single?"bar-single":conn.start?"bar-start":conn.end?"bar-end":"bar-middle");
         // Title only on the first segment so multi-day bars do not repeat in every box.
         bar.textContent=(conn.start||conn.single)?item.text:"";
-        slot.appendChild(bar); shown++;
+        slot.appendChild(bar); shown++; usedLines+=1;
       }
       day.appendChild(slot);
     }
 
-    const timed=sortedEntries(info.entries).filter(isTimed).slice(0,Math.max(0,maxVisibleEntries-shown));
-    timed.forEach(entry=>{
+    const timedUnit=(panelMode==='collapsed')?2:1;
+    for(const entry of sortedEntries(info.entries).filter(isTimed)){
+      if(usedLines+timedUnit>lineBudget)break;
       const line=document.createElement("div");
-      line.className="timed-line";
-      line.innerHTML='<span class="time">'+escapeHtml(entry.time)+'</span>'+escapeHtml(entry.text);
+      line.className='timed-line'+((panelMode==='collapsed')?' two-line':'');
+      line.innerHTML=timedLineHtml(entry,panelMode==='collapsed');
       day.appendChild(line);
-      shown++;
-    });
+      shown++; usedLines+=timedUnit;
+    }
 
     const hidden=Math.max(0,info.entries.length-shown);
     const habitTotal=habitsForKey(k).length, habitDone=habitDoneCountForKey(k);
     if(habitTotal){const hb=document.createElement("span");hb.className="cell-habit";hb.textContent=habitDone+"/"+habitTotal;day.appendChild(hb)}
     const cam=document.createElement("span");cam.className="cell-memory"+(MemoryUI.has(k)?" has-memory":"");cam.innerHTML='<span class="camera-glyph" aria-hidden="true"></span>';day.appendChild(cam);
     if(hidden){const h=document.createElement("span");h.className="cell-more";h.textContent="+"+hidden;day.appendChild(h)}
-    if(info.notes.trim()){day.title="Has notes";}
+    if(info.notes.trim()){day.title=day.title?day.title+" · Has notes":"Has notes";}
     grid.appendChild(day);
   });
   renderPalette();
@@ -998,12 +1263,15 @@ function renderWeekDock(){
   const today=keyFromDate(new Date());
   const currentMonth=monthDate.getMonth();
   const paintKeys=gridPaintKeys();
-  const rowMap=barRowsForVisibleDates(Array.from({length:7},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return d;}));
+  const weekDates=Array.from({length:7},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return d;});
+  const firstWeekKey=keyFromDate(weekDates[0]);
+  const rowMap=barRowsForVisibleDates(weekDates);
   for(let i=0;i<7;i++){
     const date=new Date(start); date.setDate(start.getDate()+i);
     const k=keyFromDate(date), info=dayData(k);
     const day=document.createElement('div');
-    day.className='week-day density-'+densityLevel(k);
+    day.className='week-day';
+    applyDensity(day,k);
     if(k===selected)day.classList.add('selected');
     if(k===today)day.classList.add('today');
     if(date.getMonth()!==currentMonth)day.classList.add('other');
@@ -1013,34 +1281,35 @@ function renderWeekDock(){
     day.onpointerdown=e=>handleDayPointerDown(e,k);
     day.onpointerenter=e=>handleDayPointerEnter(e,k);
     day.onpointerup=e=>handleDayPointerUp(e,k);
-    const num=document.createElement('div'); num.className='num'; num.textContent=date.getDate(); day.appendChild(num);
+    const num=document.createElement('div'); num.className='num'; num.textContent=date.getDate(); const holiday=holidayForKey(k); if(holiday){const star=document.createElement('span');star.className='holiday-star';star.textContent='★';star.title=holiday;num.appendChild(star);day.title=holiday;} day.appendChild(num);
     const names=uniqueUntimedNamesForKey(k), maxRow=Math.max(-1,...Object.values(rowMap[k]||{}));
-    const weekMaxVisibleEntries=7;
-    let shown=0;
-    for(let r=0;r<=maxRow && shown<weekMaxVisibleEntries;r++){
+    const weekLineBudget=8;
+    let shown=0, usedLines=0;
+    for(let r=0;r<=maxRow && usedLines+1<=weekLineBudget;r++){
       const slot=document.createElement('div'); slot.className='slot';
       const item=names.find(n=>rowMap[k][n.name]===r);
       if(item){
-        const conn=connectedInfo(k,item.name), bar=document.createElement('div');
+        const conn=visibleConnectedInfo(k,item.name,firstWeekKey), bar=document.createElement('div');
         bar.className='bar-line '+(conn.single?'bar-single':conn.start?'bar-start':conn.end?'bar-end':'bar-middle');
-        bar.textContent=(conn.start||conn.single)?item.text:'';
+        bar.textContent=(conn.start||conn.single||conn.visibleStart)?item.text:'';
         slot.appendChild(bar);
-        shown++;
+        shown++; usedLines+=1;
       }
       day.appendChild(slot);
     }
-    sortedEntries(info.entries).filter(isTimed).slice(0,Math.max(0,weekMaxVisibleEntries-shown)).forEach(entry=>{
-      const line=document.createElement('div'); line.className='timed-line';
-      line.innerHTML='<span class="time">'+escapeHtml(entry.time)+'</span>'+escapeHtml(entry.text);
+    for(const entry of sortedEntries(info.entries).filter(isTimed)){
+      if(usedLines+2>weekLineBudget)break;
+      const line=document.createElement('div'); line.className='timed-line two-line';
+      line.innerHTML=timedLineHtml(entry,true);
       day.appendChild(line);
-      shown++;
-    });
+      shown++; usedLines+=2;
+    }
     const hidden=Math.max(0,info.entries.length-shown);
     const habits=habitsForKey(k), done=habitDoneCountForKey(k);
     if(habits.length){const h=document.createElement('span');h.className='cell-habit';h.textContent=done+'/'+habits.length;day.appendChild(h)}
     const cam=document.createElement('span');cam.className='cell-memory'+(MemoryUI.has(k)?' has-memory':'');cam.innerHTML='<span class="camera-glyph" aria-hidden="true"></span>';day.appendChild(cam);
     if(hidden){const more=document.createElement('span');more.className='cell-more';more.textContent='+'+hidden;day.appendChild(more)}
-    if(info.notes.trim()){day.title='Has notes';}
+    if(info.notes.trim()){day.title=day.title?day.title+' · Has notes':'Has notes';}
     wrap.appendChild(day);
   }
 }
@@ -1145,8 +1414,10 @@ function renderDayPanel(){
     const row=document.createElement("div"); row.className="entry-row";
     const time=document.createElement("input"); time.className="time-input"; time.value=entry.time||""; time.placeholder="time";
     const text=document.createElement("input"); text.className="text-input"; text.value=entry.text||""; text.placeholder="entry";
-    time.oninput=()=>{entry.time=time.value;save();renderMonth();renderDayPanel()};
-    text.oninput=()=>{entry.text=text.value;save();renderMonth();renderDayPanel()};
+    time.oninput=()=>{entry.time=time.value;softRenderCalendarOnly()};
+    text.oninput=()=>{entry.text=text.value;softRenderCalendarOnly()};
+    time.onblur=()=>renderDayPanel();
+    text.onblur=()=>renderDayPanel();
     time.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();text.focus()}};
     text.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();addEntry()}};
     const up=document.createElement("button"); up.className="icon"; up.textContent="↑"; up.onclick=()=>moveEntry(entry.id,-1);
@@ -1220,6 +1491,8 @@ function setPanelMode(mode){
   const panel=document.querySelector('.panel');
   const btn=document.getElementById('panelToggle');
   document.body.classList.toggle('week-mode',panelMode==='week');
+  document.body.classList.toggle('panel-collapsed',panelMode==='collapsed');
+  document.body.classList.toggle('panel-open',panelMode==='open');
   if(panel){
     panel.classList.toggle('collapsed',panelMode==='collapsed');
     panel.classList.toggle('week-mode',panelMode==='week');
@@ -1269,8 +1542,8 @@ function installMonthSwipe(){/* disabled: arrows or next-month day taps only */}
 function render(){renderMonth();renderDayPanel();HabitUI.render();renderWeekDock();headerLabel();save()}
 // Month swipe disabled in V22 stable. Arrows are more reliable for testing.
 installPanelDrag();
-setPanelMode(panelMode);
-render();
+MemoryUI.wire();
+MemoryStore.hydrate().then(()=>{setPanelMode(panelMode);render();});
 </script>
 </body>
 </html>
