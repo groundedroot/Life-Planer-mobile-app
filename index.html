@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
 <title>Life Calendar V38 True Cohesion</title>
 <style>
 :root{
@@ -618,6 +618,12 @@ body.panel-collapsed .day{padding-bottom:31px;}
 .habit-edit-list .graduate{color:var(--accent2);font-size:12px;padding:5px 7px;border:1px solid rgba(226,149,69,.16)}
 .palette-add-line{padding-left:2px;padding-right:2px}
 
+
+/* V40 mobile typing + week redraw fix */
+@media(max-width:700px){
+  input, textarea, select{font-size:16px!important;}
+  .time-input,.text-input,.notes-list,.notes-add input{font-size:16px!important;}
+}
 </style>
 </head>
 <body>
@@ -994,8 +1000,8 @@ const HabitUI=(()=>{
       const row=document.createElement('div'); row.className='entry-row';
       const name=document.createElement('input'); name.className='text-input'; name.value=h.name; name.placeholder='habit';
       const sched=document.createElement('input'); sched.className='time-input'; sched.value=currentScheduleLabel(h); sched.placeholder='daily';
-      name.oninput=()=>{HabitStore.update(s=>{const x=s.habits.find(a=>a.id===h.id); if(x)x.name=name.value;}); renderMonth();};
-      sched.oninput=()=>{HabitStore.update(s=>{const x=s.habits.find(a=>a.id===h.id); if(x)x.days=parseDays(sched.value);}); renderMonth();};
+      name.oninput=()=>{HabitStore.update(s=>{const x=s.habits.find(a=>a.id===h.id); if(x)x.name=name.value;}); renderMonth();renderWeekDock();};
+      sched.oninput=()=>{HabitStore.update(s=>{const x=s.habits.find(a=>a.id===h.id); if(x)x.days=parseDays(sched.value);}); renderMonth();renderWeekDock();};
       name.onblur=()=>{if(!name.value.trim())deleteHabit(h.id); else render();};
       sched.onblur=()=>render();
       name.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();sched.focus();}};
@@ -1020,7 +1026,7 @@ const HabitUI=(()=>{
     });
     if(nameInput)nameInput.value='';
     if(scheduleInput)scheduleInput.value='';
-    save(); render(); renderMonth();
+    save(); render(); renderMonth(); renderWeekDock();
     setTimeout(()=>nameInput&&nameInput.focus(),0);
   }
   function addHabit(){const input=document.getElementById('habitNameInput'); if(input)input.focus();}
@@ -1044,15 +1050,15 @@ const HabitUI=(()=>{
     document.body.appendChild(el);
     setTimeout(()=>el.remove(),2500);
   }
-  function deleteHabit(id){HabitStore.update(s=>{s.habits=s.habits.filter(h=>h.id!==id)}); render(); renderMonth();}
+  function deleteHabit(id){HabitStore.update(s=>{s.habits=s.habits.filter(h=>h.id!==id)}); render(); renderMonth(); renderWeekDock();}
   function graduateHabit(id){
     let name='Habit';
     HabitStore.update(s=>{const h=s.habits.find(x=>x.id===id); if(h){name=h.name;h.archived=true;h.archivedAt=new Date().toISOString();}});
-    celebrateHabit(name); render(); renderMonth();
+    celebrateHabit(name); render(); renderMonth(); renderWeekDock();
   }
   function toggleCheck(id,k){
     HabitStore.update(state=>{const h=state.habits.find(x=>x.id===id); if(h){h.checks=h.checks||{}; h.checks[k]=!h.checks[k];}});
-    render(); renderMonth();
+    render(); renderMonth(); renderWeekDock();
   }
   function install(){
     const name=document.getElementById('habitNameInput');
