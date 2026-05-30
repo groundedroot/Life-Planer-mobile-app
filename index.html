@@ -608,6 +608,16 @@ body.panel-collapsed .day{padding-bottom:31px;}
 .palette-inline-editor.show{display:flex}
 @media(max-width:700px){.inline-editor{padding:9px}.inline-editor input{height:36px}.inline-btn{padding:8px 10px}}
 
+/* V39 event-style input unification */
+.habit-add-line,.palette-add-line{border-color:rgba(255,255,255,.055);margin-top:6px;padding:7px 0}
+.habit-edit-list{display:none;margin-top:8px;border-top:1px solid rgba(255,255,255,.055)}
+.habit-edit-list.show{display:block}
+.habit-edit-list .entry-row:last-child{border-bottom:0}
+.habit-edit-list .text-input{font-size:13px}
+.habit-edit-list .time-input{font-size:12px;width:72px;flex-basis:72px}
+.habit-edit-list .graduate{color:var(--accent2);font-size:12px;padding:5px 7px;border:1px solid rgba(226,149,69,.16)}
+.palette-add-line{padding-left:2px;padding-right:2px}
+
 </style>
 </head>
 <body>
@@ -663,18 +673,14 @@ body.panel-collapsed .day{padding-bottom:31px;}
       <div class="habit-strip-card top-habits">
         <div class="habit-strip-head">
           <div class="section-label">Habits</div>
-          <div class="habit-tools"><button class="habit-manage-btn" onclick="HabitUI.manageHabit()">Edit</button><button class="habit-mini-add" onclick="HabitUI.addHabit()">+</button></div>
+          <div class="habit-tools"><button id="habitEditToggle" class="habit-manage-btn" onclick="HabitUI.toggleManage()">Edit</button></div>
         </div>
         <div id="habitStrip" class="habit-strip"></div>
-          <div id="habitEditor" class="inline-editor">
-            <input id="habitNameInput" class="grow" placeholder="Habit name" />
-            <input id="habitScheduleInput" class="small-field" placeholder="daily" />
-            <button id="habitSaveBtn" class="inline-btn primary" onclick="HabitUI.saveInlineHabit()">Save</button>
-            <button id="habitGraduateBtn" class="inline-btn" onclick="HabitUI.graduateInlineHabit()">Graduate</button>
-            <button id="habitDeleteBtn" class="inline-btn danger" onclick="HabitUI.deleteInlineHabit()">Delete</button>
-            <button class="inline-btn" onclick="HabitUI.closeInlineEditor()">Cancel</button>
-            <div id="habitQuickPick" class="inline-select"></div>
-          </div>
+        <div class="add-line habit-add-line">
+          <input id="habitNameInput" class="text-input" placeholder="add habit..." />
+          <input id="habitScheduleInput" class="time-input" placeholder="daily" />
+        </div>
+        <div id="habitEditList" class="habit-edit-list"></div>
         </div>
 
       <div id="memoryPreview" class="memory-preview-card">
@@ -711,10 +717,8 @@ body.panel-collapsed .day{padding-bottom:31px;}
         </div>
         <button class="palette-done" onclick="exitEditMode()">Done</button>
       </div>
-      <div id="presetEditor" class="inline-editor palette-inline-editor">
-        <input id="presetNameInput" class="grow" placeholder="Preset name" />
-        <button id="presetSaveBtn" class="inline-btn primary" onclick="saveInlinePreset()">Save</button>
-        <button class="inline-btn" onclick="closeInlinePresetEditor()">Cancel</button>
+      <div class="add-line palette-add-line">
+        <input id="presetNameInput" class="text-input" placeholder="add paint preset..." />
       </div>
       <div id="timePalette" class="palette-row"></div>
       <div id="entryPalette" class="palette-row"></div>
@@ -941,7 +945,7 @@ const HabitStore=(()=>{
 
 const HabitUI=(()=>{
   const dayNames=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  let editingId=null;
+  let manageOpen=false;
   function selectedDayNumber(){return dateFromKey(selected).getDay();}
   function habitsForSelected(){return HabitStore.read().habits.filter(h=>!h.archived && h.days.includes(selectedDayNumber()));}
   function currentScheduleLabel(habit){return habit.days.length===7?"daily":habit.days.map(d=>dayNames[d][0]).join("");}
@@ -953,103 +957,83 @@ const HabitUI=(()=>{
     if(!habits.length){
       const empty=document.createElement("div");
       empty.className="habit-empty-mini";
-      empty.textContent="No habits for this day. Tap + to add one.";
+      empty.textContent="No habits for this day. Add one below.";
       strip.appendChild(empty);
-      renderQuickPick();
+    }else{
+      habits.forEach(habit=>{
+        const chip=document.createElement("button");
+        chip.className="habit-chip"+(habit.checks&&habit.checks[selected]?" done":"");
+        chip.title="Tap to check off.";
+        chip.onclick=()=>toggleCheck(habit.id,selected);
+        const dot=document.createElement("span"); dot.className="habit-dot"; dot.textContent="✓";
+        const name=document.createElement("span"); name.className="habit-name-mini"; name.textContent=habit.name;
+        chip.append(dot,name);
+        strip.appendChild(chip);
+      });
+    }
+    renderManageList();
+  }
+  function toggleManage(){manageOpen=!manageOpen; renderManageList();}
+  function renderManageList(){
+    const wrap=document.getElementById('habitEditList');
+    const toggle=document.getElementById('habitEditToggle');
+    if(!wrap)return;
+    wrap.innerHTML='';
+    wrap.classList.toggle('show',manageOpen);
+    if(toggle)toggle.textContent=manageOpen?'Done':'Edit';
+    if(!manageOpen)return;
+    const habits=HabitStore.read().habits.filter(h=>!h.archived);
+    if(!habits.length){
+      const empty=document.createElement('div');
+      empty.className='habit-empty-mini';
+      empty.textContent='No habits yet.';
+      wrap.appendChild(empty);
       return;
     }
-    habits.forEach(habit=>{
-      const chip=document.createElement("button");
-      chip.className="habit-chip"+(habit.checks&&habit.checks[selected]?" done":"");
-      chip.title="Tap to check off. Use Edit to change habits.";
-      chip.onclick=()=>toggleCheck(habit.id,selected);
-      const dot=document.createElement("span"); dot.className="habit-dot"; dot.textContent="✓";
-      const name=document.createElement("span"); name.className="habit-name-mini"; name.textContent=habit.name;
-      chip.append(dot,name);
-      strip.appendChild(chip);
+    habits.forEach(h=>{
+      const row=document.createElement('div'); row.className='entry-row';
+      const name=document.createElement('input'); name.className='text-input'; name.value=h.name; name.placeholder='habit';
+      const sched=document.createElement('input'); sched.className='time-input'; sched.value=currentScheduleLabel(h); sched.placeholder='daily';
+      name.oninput=()=>{HabitStore.update(s=>{const x=s.habits.find(a=>a.id===h.id); if(x)x.name=name.value;}); renderMonth();};
+      sched.oninput=()=>{HabitStore.update(s=>{const x=s.habits.find(a=>a.id===h.id); if(x)x.days=parseDays(sched.value);}); renderMonth();};
+      name.onblur=()=>{if(!name.value.trim())deleteHabit(h.id); else render();};
+      sched.onblur=()=>render();
+      name.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();sched.focus();}};
+      sched.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();sched.blur();}};
+      const grad=document.createElement('button'); grad.className='icon graduate'; grad.textContent='Graduate'; grad.onclick=()=>graduateHabit(h.id);
+      const x=document.createElement('button'); x.className='icon x'; x.textContent='×'; x.onclick=()=>deleteHabit(h.id);
+      row.append(name,sched,grad,x);
+      wrap.appendChild(row);
     });
-    renderQuickPick();
   }
-  function editorEl(){return document.getElementById('habitEditor')}
-  function openEditor(idToEdit=null){
-    editingId=idToEdit;
-    const editor=editorEl(); if(!editor)return;
+  function addHabitFromInputs(){
     const nameInput=document.getElementById('habitNameInput');
     const scheduleInput=document.getElementById('habitScheduleInput');
-    const graduateBtn=document.getElementById('habitGraduateBtn');
-    const deleteBtn=document.getElementById('habitDeleteBtn');
-    let habit=null;
-    if(idToEdit){habit=HabitStore.read().habits.find(h=>h.id===idToEdit)}
-    nameInput.value=habit?habit.name:'';
-    scheduleInput.value=habit?currentScheduleLabel(habit):'daily';
-    graduateBtn.style.display=habit?'inline-block':'none';
-    deleteBtn.style.display=habit?'inline-block':'none';
-    editor.classList.add('show');
-    renderQuickPick();
-    setTimeout(()=>nameInput.focus(),0);
-  }
-  function closeInlineEditor(){editingId=null; const editor=editorEl(); if(editor)editor.classList.remove('show');}
-  function addHabit(){openEditor(null);}
-  function manageHabit(){
-    const habits=HabitStore.read().habits.filter(h=>!h.archived);
-    if(!habits.length){addHabit();return;}
-    const editor=editorEl(); if(editor)editor.classList.add('show');
-    editingId=null;
-    document.getElementById('habitNameInput').value='';
-    document.getElementById('habitScheduleInput').value='daily';
-    document.getElementById('habitGraduateBtn').style.display='none';
-    document.getElementById('habitDeleteBtn').style.display='none';
-    renderQuickPick();
-  }
-  function renderQuickPick(){
-    const wrap=document.getElementById('habitQuickPick'); if(!wrap)return;
-    wrap.innerHTML='';
-    const habits=HabitStore.read().habits.filter(h=>!h.archived);
-    habits.forEach(h=>{
-      const btn=document.createElement('button');
-      btn.textContent=h.name;
-      btn.className=h.id===editingId?'active':'';
-      btn.onclick=()=>openEditor(h.id);
-      wrap.appendChild(btn);
-    });
-  }
-  function saveInlineHabit(){
-    const name=(document.getElementById('habitNameInput')?.value||'').trim();
-    const sched=(document.getElementById('habitScheduleInput')?.value||'daily').trim();
+    const name=(nameInput?.value||'').trim();
+    const sched=(scheduleInput?.value||'daily').trim();
     if(!name)return;
     const days=parseDays(sched);
     HabitStore.update(state=>{
-      if(editingId){
-        const h=state.habits.find(x=>x.id===editingId);
-        if(h){h.name=name;h.days=days;}
-      }else{
-        const existing=state.habits.find(h=>normalizeName(h.name)===normalizeName(name));
-        if(existing){existing.days=days;}
-        else state.habits.push({id:Date.now()+"_"+Math.random().toString(36).slice(2,6),name,days,createdAt:new Date().toISOString(),checks:{}});
-      }
+      const existing=state.habits.find(h=>!h.archived && normalizeName(h.name)===normalizeName(name));
+      if(existing){existing.days=days;}
+      else state.habits.push({id:Date.now()+"_"+Math.random().toString(36).slice(2,6),name,days,createdAt:new Date().toISOString(),checks:{}});
     });
-    closeInlineEditor(); render(); renderMonth(); save();
+    if(nameInput)nameInput.value='';
+    if(scheduleInput)scheduleInput.value='';
+    save(); render(); renderMonth();
+    setTimeout(()=>nameInput&&nameInput.focus(),0);
   }
-  function editHabit(id){openEditor(id);}
-  function deleteInlineHabit(){
-    if(!editingId)return;
-    HabitStore.update(s=>{s.habits=s.habits.filter(h=>h.id!==editingId)});
-    closeInlineEditor(); render(); renderMonth();
-  }
-  function graduateInlineHabit(){
-    if(!editingId)return;
-    let name='Habit';
-    HabitStore.update(s=>{const h=s.habits.find(x=>x.id===editingId); if(h){name=h.name;h.archived=true;h.archivedAt=new Date().toISOString();}});
-    celebrateHabit(name); closeInlineEditor(); render(); renderMonth();
-  }
+  function addHabit(){const input=document.getElementById('habitNameInput'); if(input)input.focus();}
+  function manageHabit(){toggleManage();}
   function parseDays(input){
     const v=String(input||"daily").trim().toLowerCase();
     if(!v||v==="daily"||v==="everyday"||v==="all")return [0,1,2,3,4,5,6];
     if(v==="weekday"||v==="weekdays")return [1,2,3,4,5];
     if(v==="weekend"||v==="weekends")return [0,6];
     const days=[];
-    const map={u:0,s:0,m:1,t:2,w:3,r:4,h:4,f:5,a:6};
-    for(const ch of v.replace(/[^a-z]/g,""))if(map[ch]!==undefined)days.push(map[ch]);
+    const aliases={sun:0,sunday:0,mon:1,monday:1,tue:2,tues:2,tuesday:2,wed:3,wednesday:3,thu:4,thur:4,thurs:4,thursday:4,fri:5,friday:5,sat:6,saturday:6};
+    v.split(/[ ,/]+/).forEach(part=>{if(aliases[part]!==undefined)days.push(aliases[part]);});
+    if(!days.length){const map={u:0,s:0,m:1,t:2,w:3,r:4,h:4,f:5,a:6}; for(const ch of v.replace(/[^a-z]/g,""))if(map[ch]!==undefined)days.push(map[ch]);}
     const unique=[...new Set(days)].sort((a,b)=>a-b);
     return unique.length?unique:[0,1,2,3,4,5,6];
   }
@@ -1060,11 +1044,23 @@ const HabitUI=(()=>{
     document.body.appendChild(el);
     setTimeout(()=>el.remove(),2500);
   }
+  function deleteHabit(id){HabitStore.update(s=>{s.habits=s.habits.filter(h=>h.id!==id)}); render(); renderMonth();}
+  function graduateHabit(id){
+    let name='Habit';
+    HabitStore.update(s=>{const h=s.habits.find(x=>x.id===id); if(h){name=h.name;h.archived=true;h.archivedAt=new Date().toISOString();}});
+    celebrateHabit(name); render(); renderMonth();
+  }
   function toggleCheck(id,k){
     HabitStore.update(state=>{const h=state.habits.find(x=>x.id===id); if(h){h.checks=h.checks||{}; h.checks[k]=!h.checks[k];}});
     render(); renderMonth();
   }
-  return {render,addHabit,editHabit,manageHabit,toggleCheck,saveInlineHabit,deleteInlineHabit,graduateInlineHabit,closeInlineEditor};
+  function install(){
+    const name=document.getElementById('habitNameInput');
+    const sched=document.getElementById('habitScheduleInput');
+    if(name)name.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addHabitFromInputs();}});
+    if(sched)sched.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addHabitFromInputs();}});
+  }
+  return {render,addHabit,manageHabit,toggleManage,toggleCheck,install};
 })();
 
 function keyFromDate(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
@@ -1249,41 +1245,31 @@ function renderPalette(){
   entryWrap.appendChild(add);
   selectedTemplate=activePaletteTemplate();
 }
-let editingPresetName=null;
-function openInlinePresetEditor(oldName=''){
-  editingPresetName=oldName||null;
-  const editor=document.getElementById('presetEditor');
-  const input=document.getElementById('presetNameInput');
-  const btn=document.getElementById('presetSaveBtn');
-  if(!editor||!input)return;
-  input.value=oldName||'';
-  btn.textContent=oldName?'Rename':'Add';
-  editor.classList.add('show');
-  setTimeout(()=>input.focus(),0);
-}
-function closeInlinePresetEditor(){
-  editingPresetName=null;
-  const editor=document.getElementById('presetEditor');
-  if(editor)editor.classList.remove('show');
-}
-function saveInlinePreset(){
+function savePresetFromInput(){
   const input=document.getElementById('presetNameInput');
   const name=(input?.value||'').trim();
   if(!name)return;
-  if(editingPresetName){
-    const oldName=editingPresetName;
-    Object.values(data).forEach(day=>(day.entries||[]).forEach(e=>{if(normalizeName(e.text)===normalizeName(oldName))e.text=name}));
-    customRecents=customRecents.map(t=>normalizeName(t.text)===normalizeName(oldName)?{...t,text:name}:t);
-    if(normalizeName(paletteEntry)===normalizeName(oldName))paletteEntry=name;
-  }else{
-    paletteEntry=name;
-    customRecents=customRecents.filter(t=>normalizeName(t.text)!==normalizeName(paletteEntry));
-    customRecents.push({text:paletteEntry,time:""});
-  }
-  closeInlinePresetEditor(); save(); render();
+  paletteEntry=name;
+  customRecents=customRecents.filter(t=>normalizeName(t.text)!==normalizeName(name));
+  customRecents.push({text:name,time:paletteTime||""});
+  if(input)input.value='';
+  save(); render();
+  setTimeout(()=>input&&input.focus(),0);
 }
-function addPaletteEntry(){openInlinePresetEditor('');}
-function renamePaletteEntry(oldName){openInlinePresetEditor(oldName);}
+function addPaletteEntry(){const input=document.getElementById('presetNameInput'); if(input)input.focus();}
+function renamePaletteEntry(oldName){
+  const input=document.getElementById('presetNameInput');
+  if(!input)return;
+  input.value=oldName||'';
+  input.focus();
+  input.select();
+}
+function installPresetInput(){
+  const input=document.getElementById('presetNameInput');
+  if(!input)return;
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();savePresetFromInput();}});
+}
+
 
 function nthWeekdayOfMonth(year,month,weekday,n){
   const d=new Date(year,month,1); const offset=(weekday-d.getDay()+7)%7; d.setDate(1+offset+(n-1)*7); return d;
@@ -1607,6 +1593,8 @@ function focusNotes(){document.getElementById("notesList").focus()}
 function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")}
 document.getElementById("newText").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addEntry()}});
 document.getElementById("newTime").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addEntry()}});
+HabitUI.install();
+installPresetInput();
 document.getElementById("notesList").addEventListener("blur",saveNotesFromDisplay);
 document.getElementById("notesList").addEventListener("keydown",e=>{if(e.key==="Enter"){document.execCommand("insertLineBreak");e.preventDefault()}});
 
